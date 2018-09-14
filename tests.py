@@ -33,7 +33,7 @@ class PhpSerializeTestCase(unittest.TestCase):
 
     def test_dumps_dict(self):
         self.assertEqual(phpserialize.dumps({'a': 1, 'b': 2, 'c': 3}),
-                         b'a:3:{s:1:"a";i:1;s:1:"c";i:3;s:1:"b";i:2;}')
+                         b'a:3:{s:1:"a";i:1;s:1:"b";i:2;s:1:"c";i:3;}')
 
     def test_loads_dict(self):
         self.assertEqual(phpserialize.loads(b'a:3:{s:1:"a";i:1;s:1:"c";i:3;s:1:"b";i:2;}',
@@ -88,7 +88,7 @@ class PhpSerializeTestCase(unittest.TestCase):
         x = phpserialize.dumps(user, object_hook=dump_object_hook)
         y = phpserialize.loads(x, object_hook=load_object_hook,
                                decode_strings=True)
-        self.assert_(b'WP_User' in x)
+        self.assertTrue(b'WP_User' in x)
         self.assertEqual(type(y), type(user))
         self.assertEqual(y.username, user.username)
 
@@ -101,7 +101,7 @@ class PhpSerializeTestCase(unittest.TestCase):
 
     def test_session(self):
         data = b'foo|a:1:{s:1:"a";s:1:"b";}bar|a:1:{s:1:"c";s:1:"d";}'
-        session = phpserialize.loads(data)
+        session = phpserialize.loads(data, decode_strings=True)
         self.assertEqual(session, {'foo': {'a': 'b'}, 'bar': {'c': 'd'}})
 
     def test_loads_unicode_strings(self):
